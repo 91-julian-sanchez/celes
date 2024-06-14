@@ -7,3 +7,11 @@ class SalesByEmployeeResponse(BaseModel):
     employee: str
     TotalQty: int
     TotalAmount: float
+    
+class SalesByProductResponse(BaseModel):
+    """
+    This model defines the response schema for the `/sales/product/{product_id}` endpoint.
+    """
+    product: str
+    TotalQty: int
+    TotalAmount: float
