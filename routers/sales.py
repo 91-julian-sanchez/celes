@@ -1,14 +1,15 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from datetime import date
 from models import SalesByEmployeeResponse, SalesByProductResponse, SalesByStoreResponse
 from services.sales_service import SalesService
 import logging
 
+
+
 logger = logging.getLogger('celes_app')
 logger.setLevel(logging.INFO)
 
 router = APIRouter()
-
 
 @router.get("/sales/employee/{employee_id}", response_model=SalesByEmployeeResponse)
 def get_sales_by_employee(employee_id: str, start_date: date, end_date: date):
