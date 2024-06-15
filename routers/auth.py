@@ -1,50 +1,37 @@
-from fastapi import HTTPException, Depends
-from jose import JWTError, jwt
-from datetime import datetime, timedelta
-from typing import Optional
-from models import fake_users_db
-from constants.app_constants import SECRET_KEY, ALGORITHM
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.security import OAuth2PasswordRequestForm
+from services.auth_service import create_access_token, authenticate_user
+from constants.app_constants import ACCESS_TOKEN_EXPIRE_MINUTES
+from datetime import timedelta
 
-def authenticate(token: str):
+router = APIRouter()
+
+@router.post("/token")
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     """
-    Function to authenticate the JWT token.
+    Endpoint para obtener un token de acceso mediante autenticación OAuth2.
 
-    Args:
-    - token (str): JWT token extracted from the Authorization header.
+    **Parameters:**
+    *    **form_data (OAuth2PasswordRequestForm):** Datos del formulario OAuth2 que incluyen
+                                               el nombre de usuario y la contraseña.
 
-    Returns:
-    - str: Token if it's valid.
+    **Returns:**
+    *    **dict:** Un diccionario que contiene el token de acceso y el tipo de token.
+
+    **Raises:**
+    *    **HTTPException:** Si el nombre de usuario o la contraseña son incorrectos.
     """
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise HTTPException(status_code=400, detail="Invalid token")
-    except JWTError:
-        raise HTTPException(status_code=400, detail="Invalid token")
-    return token
+    user = authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user["username"]}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
-def get_current_user(token: str = Depends(authenticate)):
-    """
-    Function to extract and validate the JWT token from the Authorization header.
 
-    Args:
-    - token (str): JWT token extracted from the Authorization header.
-
-    Returns:
-    - dict: Dictionary containing the user information if the token is valid.
-
-    Raises:
-    - HTTPException: If the token is invalid or expired.
-    """
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise HTTPException(status_code=400, detail="Invalid token")
-    except JWTError:
-        raise HTTPException(status_code=400, detail="Invalid token")
-    user = fake_users_db.get(username)
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user

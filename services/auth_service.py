@@ -1,13 +1,13 @@
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
-from models import fake_users_db
-from constants.app_constants import  SECRET_KEY, ALGORITHM
+from constants.app_constants import  SECRET_KEY, ALGORITHM, FAKE_USERS_DB
 from fastapi import  HTTPException
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+
 def authenticate_user(username: str, password: str):
-    user = fake_users_db.get(username)
+    user = FAKE_USERS_DB.get(username)
     if not user:
         return False
     if password != user.get("password"):
@@ -40,7 +40,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise credentials_exception
 
-    user = fake_users_db.get(username)
+    user = FAKE_USERS_DB.get(username)
     if user is None:
         raise credentials_exception
     return user
