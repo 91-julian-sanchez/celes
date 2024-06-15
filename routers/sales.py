@@ -3,8 +3,7 @@ from datetime import date
 from models import SalesByEmployeeResponse, SalesByProductResponse, SalesByStoreResponse
 from services.sales_service import SalesService
 import logging
-
-
+from services.auth_service import get_current_user
 
 logger = logging.getLogger('celes_app')
 logger.setLevel(logging.INFO)
@@ -12,7 +11,7 @@ logger.setLevel(logging.INFO)
 router = APIRouter()
 
 @router.get("/sales/employee/{employee_id}", response_model=SalesByEmployeeResponse)
-def get_sales_by_employee(employee_id: str, start_date: date, end_date: date):
+def get_sales_by_employee(employee_id: str, start_date: date, end_date: date, current_user: dict = Depends(get_current_user)):
     """
     This endpoint retrieves sales data for a specific employee within a date range and calculates totals.
 
@@ -21,6 +20,7 @@ def get_sales_by_employee(employee_id: str, start_date: date, end_date: date):
     * **employee_id (str):** The ID of the employee whose sales data you want to retrieve.
     * **start_date (date):** The start date of the date range (inclusive) in YYYY-MM-DD format.
     * **end_date (date):** The end date of the date range (inclusive) in YYYY-MM-DD format.
+    * **current_user (dict):** The current user extracted from the JWT token.
 
     **Returns:**
 
@@ -51,7 +51,7 @@ def get_sales_by_employee(employee_id: str, start_date: date, end_date: date):
 
 
 @router.get("/sales/product/{product_id}", response_model=SalesByProductResponse)
-def get_sales_by_product(product_id: str, start_date: date, end_date: date):
+def get_sales_by_product(product_id: str, start_date: date, end_date: date, current_user: dict = Depends(get_current_user)):
     """
     This endpoint retrieves sales data for a specific product within a date range and calculates totals.
 
@@ -60,6 +60,7 @@ def get_sales_by_product(product_id: str, start_date: date, end_date: date):
     * **product_id (str):** The ID of the product whose sales data you want to retrieve.
     * **start_date (date):** The start date of the date range (inclusive) in YYYY-MM-DD format.
     * **end_date (date):** The end date of the date range (inclusive) in YYYY-MM-DD format.
+    * **current_user (dict):** The current user extracted from the JWT token.
 
     **Returns:**
 
@@ -89,7 +90,7 @@ def get_sales_by_product(product_id: str, start_date: date, end_date: date):
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/sales/store/{store_id}", response_model=SalesByStoreResponse)
-def get_sales_by_store(store_id: str, start_date: date, end_date: date):
+def get_sales_by_store(store_id: str, start_date: date, end_date: date, current_user: dict = Depends(get_current_user)):
     """
     This endpoint retrieves sales data for a specific store within a date range and calculates totals.
 
@@ -98,6 +99,7 @@ def get_sales_by_store(store_id: str, start_date: date, end_date: date):
     * **store_id (str):** The ID of the store whose sales data you want to retrieve.
     * **start_date (date):** The start date of the date range (inclusive) in YYYY-MM-DD format.
     * **end_date (date):** The end date of the date range (inclusive) in YYYY-MM-DD format.
+    * **current_user (dict):** The current user extracted from the JWT token.
 
     **Returns:**
 
