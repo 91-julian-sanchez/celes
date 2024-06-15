@@ -91,3 +91,31 @@ class SalesRepository:
             (sales_data_df["KeyDate"] <= end_date)
         ]
         return filtered_sales
+    
+    @staticmethod
+    def get_sales_by_store(store_id: str, start_date: date, end_date: date) -> pd.DataFrame:
+        """
+        Gets sales data for a specific store within a date range.
+
+        Args:
+            store_id (str): ID of the store whose sales data to retrieve.
+            start_date (date): Start date of the date range (inclusive) in YYYY-MM-DD format.
+            end_date (date): End date of the date range (inclusive) in YYYY-MM-DD format.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing filtered sales data for the specified store and date range.
+
+        Assumptions:
+            * Same assumptions as `get_sales_by_employee` regarding `sales_data_df` and "KeyDate" column.
+        """
+
+        sales_data_df["KeyDate"] = pd.to_datetime(sales_data_df["KeyDate"])
+        start_date = pd.to_datetime(start_date)
+        end_date = pd.to_datetime(end_date)
+
+        filtered_sales = sales_data_df[
+            (sales_data_df["KeyStore"] == store_id) &
+            (sales_data_df["KeyDate"] >= start_date) &
+            (sales_data_df["KeyDate"] <= end_date)
+        ]
+        return filtered_sales

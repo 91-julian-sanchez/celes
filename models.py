@@ -15,3 +15,11 @@ class SalesByProductResponse(BaseModel):
     product: str
     TotalQty: int
     TotalAmount: float
+    
+class SalesByStoreResponse(BaseModel):
+    """
+    This model defines the response schema for the `/sales/store/{store_id}` endpoint.
+    """
+    store: str
+    TotalQty: int
+    TotalAmount: float
