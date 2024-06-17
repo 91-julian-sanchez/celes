@@ -14,7 +14,7 @@ lint:
 
 .PHONY: test
 test:
-	$(PYTHON) -m unittest tests.test_main
+	pytest
 
 .PHONY: build
 build:
