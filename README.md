@@ -1,6 +1,8 @@
 # Microservicio para Consultas en Datamart
 Este proyecto es parte de la prueba técnica para Desarrollador Python en Celes. El objetivo es desarrollar un microservicio en Python que interactúe con un Datamart, proporcionando una interfaz para consultas y operaciones específicas.
 
+Se utiliza el framework [FastAPI](https://fastapi.tiangolo.com/) y sigue una arquitectura en capas para una mejor organización y mantenibilidad del código.
+
 ## Configuración del Proyecto
 ### Clonar el Repositorio
 Para empezar, clona este repositorio en tu máquina local:
@@ -35,12 +37,12 @@ make down
 Para ejecutar la aplicación, ejecuta:
 
 ```sh 
-make up
+docker-compose up
 ```
 
 Para detener la aplicación, ejecuta:
 ``` sh 
-make down
+docker-compose down
 ```
 
 ## Endpoints Existentes
